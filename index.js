@@ -5,7 +5,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import userRoutes from './router.js';
-
+import redisClient from './redisConfig.js';
 dotenv.config();
 const app = express();
 
@@ -37,3 +37,9 @@ const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+process.on('SIGINT', () => {
+	console.log('SIGINT signal received: closing Redis client');
+	redisClient.quit();
+	process.exit(0);
+  })
